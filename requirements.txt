@@ -1,0 +1,8 @@
+pandas
+numpy
+scikit-learn
+scikit-optimize
+xgboost
+shap
+folium
+matplotlib
