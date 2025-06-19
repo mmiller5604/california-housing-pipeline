@@ -1,0 +1,9 @@
+
+    California Housing Modeling Pipeline Summary
+    --------------------------------------------
+    - Baseline RF RMSE ~53k, R² ~0.79
+    - Tuned XGB CV RMSE: 46330.99, R²: 0.839
+    - Pruned XGB RMSE: 46610.36
+    - Stacked ensemble RMSE: 45338.07
+    Features: num__longitude, num__latitude, num__housing_median_age, num__total_rooms, num__total_bedrooms, num__population, num__households, num__median_income, num__rooms_per_household, num__bedrooms_per_room, num__population_per_household, num__median_income_sq, num__inc_rooms_interaction, cat__ocean_proximity_<1H OCEAN, cat__ocean_proximity_INLAND, cat__ocean_proximity_ISLAND, cat__ocean_proximity_NEAR BAY, cat__ocean_proximity_NEAR OCEAN, cat__income_cat_1, cat__income_cat_2, cat__income_cat_3, cat__income_cat_4, cat__geo_cluster_0, cat__geo_cluster_1, cat__geo_cluster_2, cat__geo_cluster_3, cat__geo_cluster_4, cat__geo_cluster_5, cat__geo_cluster_7, cat__geo_cluster_8, cat__geo_cluster_9
+    
