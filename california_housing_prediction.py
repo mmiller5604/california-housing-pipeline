@@ -1,5 +1,4 @@
-#!/usr/bin/env python3
-# california_housing_advanced_fixed.py
+
 
 import pandas as pd
 import numpy as np
