@@ -1,39 +1,54 @@
-California Housing Price Pipeline
-I set out to build an end-to-end pipeline that turns raw California housing data into spot-on price predictions—and came away with some pretty cool takeaways:
+# California Housing Price Pipeline
 
-Smart Features
+I built an end-to-end ML pipeline that takes raw California housing data and turns it into spot-on home-value predictions. Here’s the rundown:
 
-I cooked up ratios like rooms-per-household and bedrooms-per-room, plus squared and interaction terms on income.
+---
 
-I even clustered lat/long into “neighborhood” groups with K-means and binned incomes into quintiles.
+## 1. Smart Feature Engineering  
+- **Household Ratios:** rooms / household, bedrooms / room, population / household  
+- **Polynomial & Interaction Terms:** squared median income, income × rooms per household  
+- **Geo & Income Buckets:** K-means clusters on (lat, lon) and income quintile bins  
 
-Tuned XGBoost
+## 2. Bayesian-Tuned XGBoost  
+- Wrapped an XGBoost regressor in a `TransformedTargetRegressor` to model `log(price)`  
+- Ran a Bayesian hyperparameter search (via `skopt.BayesSearchCV`) over:  
+  - number of trees, learning rate, max depth  
+  - subsample / colsample ratios, L1/L2 regularization  
+- **5-Fold CV Results:**  
+  - **RMSE:** 45 860  
+  - **R²:** 0.843  
 
-Wrapping the model in a log-transform helped stabilize things.
+## 3. Explainability with SHAP  
+![SHAP Summary](shap_summary.png)  
+- **Top Drivers:**  
+  1. **Median income** (higher → higher prices)  
+  2. **Inland vs. Coastal** (inland pushes prices down)  
+  3. **Latitude/Longitude**  
+- My custom ratios and clusters sit mid-rank—proof the extra engineering paid off.
 
-I ran a Bayesian search to hone in on the best n_estimators, max_depth, learning rate, regularization, etc.
+## 4. Feature Pruning  
+- Dropped the bottom 5 % of features by importance  
+- **Pruned XGB RMSE:** 47 207 (small trade-off for a leaner model)
 
-Result: CV RMSE ≈ 45 860 and R² ≈ 0.843—already a leap over my vanilla Random Forest.
+## 5. Stacked Ensemble  
+- Combined **XGBoost + Random Forest + Lasso** (as meta-learner)  
+- **Test-Set RMSE:** 44 346  (another ≈ 1 500 improvement)
 
-Reading the “Why” with SHAP
+## 6. Spatial Residual Analysis  
+- Mapped over-/under-predictions back onto latitude/longitude  
+- **Interactive Map:** `residuals_map.html` shows red (under-predicted) vs. blue (over-predicted) areas—great clues for adding local features like school districts or amenities!
 
-I generated a SHAP summary to see exactly which features are driving predictions.
+---
 
-Top hits: median income (no surprise), inland vs. coastal, then geography (lat/long).
+### Bottom Line  
+From raw CSV to a **44 k-dollar RMSE**, this pipeline taught me tons about:
+- Feature engineering and spatial clustering  
+- Bayesian hyperparameter tuning  
+- Model interpretability (SHAP)  
+- Pruning for simplicity  
+- Ensembling to squeeze out extra accuracy  
 
-My custom ratios show up solidly in the middle—proof that the extra crafting paid off.
-
-Pruning & Stacking
-
-I dropped the bottom 5 % of features by importance (traded off a little accuracy, RMSE ≈ 47 200).
-
-Then I built a stacked ensemble (XGB + RF + Lasso) that squeezed RMSE down to ≈ 44 350 on the test set.
-
-Spotting Trouble Zones
-
-Mapping residuals back on a Folium map showed me where the model over- or under-predicts—great clues for adding local amenities or school-district features next.
-
-Bottom line: from raw CSV to a 44 k-dollar RMSE, this pipeline has taught me tons about feature engineering, hyperparameter search, explainability, and ensembling. Feel free to poke around the code, browse the SHAP plot, or click the residuals_map.html to explore where we’re still missing the mark.
+Feel free to dive into the code, explore the SHAP plot, or click through the residuals map.
 
 ## Quickstart
 
